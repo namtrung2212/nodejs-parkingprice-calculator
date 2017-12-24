@@ -19,7 +19,11 @@ server.get('/GetBookingOptions', function (req, res) {
 
     if (req.query.startAt && req.query.paidAmt) {
 
-        var startAt = moment.unix(req.query.startAt);
+        if (req.query.startAt == "now")
+            startAt = moment.utc().utcOffset(7);
+        else
+            startAt = moment.unix(req.query.startAt).utcOffset(7);
+
         var paidAmt = req.query.paidAmt;
 
         var options = pricing.GetBookingOptions(startAt, paidAmt);
@@ -40,14 +44,14 @@ server.get('/CalculateBooking', function (req, res) {
 
         var startAt;
         if (req.query.startAt == "now")
-            startAt = moment.utc();
+            startAt = moment.utc().utcOffset(7);
         else
-            startAt = moment.unix(req.query.startAt);
+            startAt = moment.unix(req.query.startAt).utcOffset(7);
 
         var endAt = moment(startAt).add(req.query.minuteQty, "m");
 
-        console.log("order : startAt = " + startAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
-        console.log("order : endAt = " + endAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
+        console.log("order : startAt = " + startAt.format("YYYY-MM-DD HH:mm:ss"));
+        console.log("order : endAt = " + endAt.format("YYYY-MM-DD HH:mm:ss"));
         booking = pricing.CalculateBooking(startAt, endAt);
 
     }
