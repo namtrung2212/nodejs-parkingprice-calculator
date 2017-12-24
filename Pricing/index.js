@@ -1,3 +1,5 @@
+import { start } from 'repl';
+
 
 var http = require('http');
 var express = require('express');
@@ -36,7 +38,12 @@ server.get('/CalculateBooking', function (req, res) {
 
     if (req.query.startAt && req.query.minuteQty) {
 
-        var startAt = moment.unix(req.query.startAt);
+        var startAt;
+        if (req.query.startAt == "now")
+            startAt = moment();
+        else
+            startAt = moment.unix(req.query.startAt);
+
         var endAt = moment(startAt).add(req.query.minuteQty, "m");
 
         booking = pricing.CalculateBooking(startAt, endAt);
