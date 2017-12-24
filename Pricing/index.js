@@ -35,18 +35,7 @@ server.get('/CalculateBooking', function (req, res) {
         var startAt = moment.unix(req.query.startAt);
         var minuteQty = moment(startAt).add(req.query.minuteQty, "m");
 
-        console.log("order : startAt = " + startAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
-        console.log("order : endAt = " + endAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
-
         var booking = pricing.CalculateBooking(startAt, endAt);
-        if (booking) {
-
-            console.log("booking : startAt = " + (booking.startAt != null ? booking.startAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null));
-            console.log("booking : endAt = " + (booking.endAt != null ? booking.endAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null));
-            console.log("booking : duration = " + Math.floor(booking.minuteQty / 60) + " hours " + (booking.minuteQty % 60) + " minutes");
-            console.log("booking : price = " + booking.price); console.log(" ");
-
-        }
 
         res.json(booking);
 
