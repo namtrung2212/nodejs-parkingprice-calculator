@@ -33,6 +33,9 @@ server.get('/GetBookingOptions', function (req, res) {
 
 server.get('/CalculateBooking', function (req, res) {
 
+    console.log("now1 = " + moement().format("YYYY-MM-DD HH:mm:ss"));
+    console.log("now2 = " + moement().utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
+
     var booking = {};
 
     if (req.query.startAt && req.query.minuteQty) {
