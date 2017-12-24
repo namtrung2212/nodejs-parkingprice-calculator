@@ -1,4 +1,3 @@
-import { start } from 'repl';
 
 
 var http = require('http');
@@ -56,10 +55,7 @@ server.get('/CalculateBooking', function (req, res) {
 
 
 server.get('/GetPriceList', async function (req, res) {
-    console.log("1");
     var priceList = await pricing.GetPriceList();
-    console.log("2");
-    console.log("priceList = " + JSON.stringify(priceList));
     res.json(priceList);
 });
 
