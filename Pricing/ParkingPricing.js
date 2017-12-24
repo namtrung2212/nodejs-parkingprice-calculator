@@ -16,7 +16,7 @@ function ParkingPricing() {
 
     this.PriceList = [
         {
-            startHour: 6, endHour: 22, UOM: 60,
+            startHour: 0, endHour: 24, UOM: 60,
             prices: [
                 { from: 1, to: 2, unitprice: 25000, adjust: 0 },
                 { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
