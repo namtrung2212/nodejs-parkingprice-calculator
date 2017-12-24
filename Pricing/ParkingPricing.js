@@ -103,7 +103,6 @@ ParkingPricing.prototype.TryGetBookingOptions = function (startAt, endAt, result
     do {
 
         var booking = this.CalculateBooking(startAt, endAt.add(interval, 'm'));
-        console.log(JSON.stringify(booking));
         if (!booking || booking.minuteQty <= 0)
             return results;
 
