@@ -10,6 +10,8 @@ var pricing = new ParkingPricing();
 
 
 const server = express();
+server.use(bodyParser.urlencoded({ extended: false }))
+server.use(bodyParser.json())
 server.listen(3000);
 
 server.get('/GetBookingOptions', function (req, res) {
@@ -30,28 +32,34 @@ server.get('/GetBookingOptions', function (req, res) {
 
 server.get('/CalculateBooking', function (req, res) {
 
+    var booking = {};
+
     if (req.query.startAt && req.query.minuteQty) {
 
         var startAt = moment.unix(req.query.startAt);
         var endAt = moment(startAt).add(req.query.minuteQty, "m");
 
-        // console.log("order : startAt = " + startAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
-        // console.log("order : endAt = " + endAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
+        booking = pricing.CalculateBooking(startAt, endAt);
 
-        var booking = pricing.CalculateBooking(startAt, endAt);
-        // if (booking) {
-
-        //     console.log("booking : startAt = " + (booking.startAt != null ? booking.startAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null));
-        //     console.log("booking : endAt = " + (booking.endAt != null ? booking.endAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null));
-        //     console.log("booking : duration = " + Math.floor(booking.minuteQty / 60) + " hours " + (booking.minuteQty % 60) + " minutes");
-        //     console.log("booking : price = " + booking.price); console.log(" ");
-
-        // }
-
-        res.json(booking);
-
-    } else {
-        res.json({});
     }
+
+    res.json(booking);
+
+});
+
+
+server.get('/GetPriceList', async function (req, res) {
+    var priceList = await pricing.GetPriceList();
+    res.json(priceList);
+});
+
+server.post('/SetPriceList', async function (req, res) {
+
+    var priceList = req.body;
+
+    await pricing.SetPriceList(priceList);
+
+    priceList = await pricing.GetPriceList();
+    res.json(priceList);
 
 });

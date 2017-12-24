@@ -1,39 +1,82 @@
 
 var moment = require('moment');
+const RedisClient = require('redis');
 
 function ParkingPricing() {
 
-    // this.PriceList = [
-    //     {
-    //         startHour: 6, endHour: 22, UOM: 60,
-    //         prices: [
-    //             { from: 1, to: 2, unitprice: 25000, adjust: 0 },
-    //             { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
-    //             { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
-    //         ]
-    //     }
-    // ];
-
-    this.PriceList = [
-        {
-            startHour: 0, endHour: 24, UOM: 60,
-            prices: [
-                { from: 1, to: 2, unitprice: 25000, adjust: 0 },
-                { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
-                { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
-            ]
-        },
-        {
-            startHour: 18, endHour: 6, UOM: 60,
-            prices: [
-                { from: 7, to: 12, unitprice: 0, adjust: 150000 }
-            ]
-        }
-    ];
-
+    this.caching = RedisClient.createClient("6379", "localhost");
+    this.InitPriceList();
 };
 
 module.exports = ParkingPricing;
+
+ParkingPricing.prototype.InitPriceList = async function () {
+
+    var priceList = await this.GetPriceList();
+
+    if (!priceList) {
+
+        // this.PriceList = [
+        //     {
+        //         startHour: 6, endHour: 22, UOM: 60,
+        //         prices: [
+        //             { from: 1, to: 2, unitprice: 25000, adjust: 0 },
+        //             { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
+        //             { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
+        //         ]
+        //     }
+        // ];
+
+        this.PriceList = [
+            {
+                startHour: 0, endHour: 24, UOM: 60,
+                prices: [
+                    { from: 1, to: 2, unitprice: 25000, adjust: 0 },
+                    { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
+                    { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
+                ]
+            },
+            {
+                startHour: 18, endHour: 6, UOM: 60,
+                prices: [
+                    { from: 7, to: 12, unitprice: 0, adjust: 150000 }
+                ]
+            }
+        ];
+
+        await this.SetPriceList(this.PriceList);
+
+    }
+};
+
+ParkingPricing.prototype.SetPriceList = async function (priceList) {
+    this.PriceList = priceList;
+    this.caching.set("ParkingPriceList", JSON.stringify(priceList));
+};
+
+ParkingPricing.prototype.GetPriceList = async function (key) {
+
+    var that = this;
+
+    return new Promise(async function (resolve, reject) {
+
+        try {
+
+            that.caching.get("ParkingPriceList", function (err, reply) {
+
+                var priceList = err ? null : JSON.parse(reply);
+                resolve(priceList);
+            });
+
+        } catch (error) {
+
+            resolve(null);
+        }
+    }).catch(err => {
+
+    });
+};
+
 
 //MONEY TO DURATION
 ParkingPricing.prototype.GetBookingOptions = function (createdAt, paidAmt) {
