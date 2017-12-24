@@ -10,7 +10,7 @@ var pricing = new ParkingPricing();
 
 
 const server = express();
-server.listen(80);
+server.listen(3000);
 
 server.get('/GetBookingOptions', function (req, res) {
 
