@@ -39,7 +39,7 @@ server.get('/CalculateBooking', function (req, res) {
 
         var startAt;
         if (req.query.startAt == "now")
-            startAt = moment().utcOffset(7);
+            startAt = moment();
         else
             startAt = moment.unix(req.query.startAt);
 
