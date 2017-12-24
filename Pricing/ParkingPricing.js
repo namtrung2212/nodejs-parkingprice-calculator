@@ -103,7 +103,8 @@ ParkingPricing.prototype.TryGetBookingOptions = function (startAt, endAt, result
     do {
         endAt = endAt.add(interval, 'm');
         var booking = this.CalculateBooking(startAt, endAt);
-        if (!booking || booking.minuteQty <= 0)
+        if (!booking || booking.minuteQty <= 0
+            || (results.length > 0 && results[results.length - 1].minuteQty == booking.minuteQty))
             return results;
 
         if (booking.price <= paidAmt) {
