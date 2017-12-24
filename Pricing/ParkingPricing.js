@@ -89,7 +89,9 @@ ParkingPricing.prototype.GetBookingOptions = function (createdAt, paidAmt) {
     var endAt = moment(startAt);
     results = this.TryGetBookingOptions(startAt, endAt, results, paidAmt, 60);
 
-    endAt = moment(results[results.length - 1].endAt);
+    if (results.length > 0)
+        endAt = moment(results[results.length - 1].endAt);
+
     results = this.TryGetBookingOptions(startAt, endAt, results, paidAmt, 1);
 
     return results;
@@ -101,6 +103,10 @@ ParkingPricing.prototype.TryGetBookingOptions = function (startAt, endAt, result
     do {
 
         var booking = this.CalculateBooking(startAt, endAt.add(interval, 'm'));
+        console.log(JSON.stringify(booking));
+        if (!booking || booking.minuteQty <= 0)
+            return results;
+
         if (booking.price <= paidAmt) {
 
             var obj = {
