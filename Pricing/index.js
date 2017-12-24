@@ -44,14 +44,14 @@ server.get('/CalculateBooking', function (req, res) {
 
         var startAt;
         if (req.query.startAt == "now")
-            startAt = moment.utc().utcOffset(7);
+            startAt = moment.utc();
         else
-            startAt = moment.unix(req.query.startAt).utcOffset(7);
+            startAt = moment.unix(req.query.startAt);
 
         var endAt = moment(startAt).add(req.query.minuteQty, "m");
 
-        console.log("order : startAt = " + startAt.format("YYYY-MM-DD HH:mm:ss"));
-        console.log("order : endAt = " + endAt.format("YYYY-MM-DD HH:mm:ss"));
+        // console.log("order : startAt = " + startAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
+        // console.log("order : endAt = " + endAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
         booking = pricing.CalculateBooking(startAt, endAt);
 
     }
