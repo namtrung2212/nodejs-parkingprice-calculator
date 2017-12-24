@@ -119,9 +119,10 @@ ParkingPricing.prototype.TryGetBookingOptions = function (startAt, endAt, result
             } else {
                 results[results.length - 1] = obj;
             }
-
-            endAt = moment(booking.endAt);
         }
+
+        endAt = moment(booking.endAt);
+
 
     } while (booking.price <= paidAmt);
 
