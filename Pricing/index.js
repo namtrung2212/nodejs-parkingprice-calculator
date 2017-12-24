@@ -33,7 +33,7 @@ server.get('/CalculateBooking', function (req, res) {
     if (req.query.startAt && req.query.endAt) {
 
         var startAt = moment.unix(req.query.startAt);
-        var endAt = moment.unix(req.query.endAt);
+        var minuteQty = moment(startAt).add(minuteQty, "m");
 
         console.log("order : startAt = " + startAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
         console.log("order : endAt = " + endAt.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"));
