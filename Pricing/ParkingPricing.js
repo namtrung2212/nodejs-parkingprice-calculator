@@ -174,8 +174,8 @@ ParkingPricing.prototype.CalculateBooking = function (startAt, endAt) {
     return {
         minuteQty: this.Minutes.length,
         hourQty: parseFloat(this.Minutes.length / 60).toFixed(2),
-        startAt: finalStart ? moment(finalStart).utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null,
-        endAt: finalEnd ? moment(finalEnd).utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null,
+        startAt: finalStart ? moment(finalStart).utcOffset(0).format("YYYY-MM-DD HH:mm:ss") : null,
+        endAt: finalEnd ? moment(finalEnd).utcOffset(0).format("YYYY-MM-DD HH:mm:ss") : null,
         // startAt: finalStart,
         // endAt: finalEnd,
         price: totalPrice
