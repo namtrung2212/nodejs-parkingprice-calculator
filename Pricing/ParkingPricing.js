@@ -16,33 +16,33 @@ ParkingPricing.prototype.InitPriceList = async function () {
 
     if (!this.PriceList) {
 
-        // this.PriceList = [
-        //     {
-        //         startHour: 6, endHour: 22, UOM: 60,
-        //         prices: [
-        //             { from: 1, to: 2, unitprice: 25000, adjust: 0 },
-        //             { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
-        //             { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
-        //         ]
-        //     }
-        // ];
-
         this.PriceList = [
             {
-                startHour: 0, endHour: 24, UOM: 60,
+                startHour: 6, endHour: 22, UOM: 60,
                 prices: [
                     { from: 1, to: 2, unitprice: 25000, adjust: 0 },
                     { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
                     { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
                 ]
-            },
-            {
-                startHour: 18, endHour: 6, UOM: 60,
-                prices: [
-                    { from: 7, to: 12, unitprice: 0, adjust: 150000 }
-                ]
             }
         ];
+
+        // this.PriceList = [
+        //     {
+        //         startHour: 0, endHour: 24, UOM: 60,
+        //         prices: [
+        //             { from: 1, to: 2, unitprice: 25000, adjust: 0 },
+        //             { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
+        //             { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
+        //         ]
+        //     },
+        //     {
+        //         startHour: 18, endHour: 6, UOM: 60,
+        //         prices: [
+        //             { from: 7, to: 12, unitprice: 0, adjust: 150000 }
+        //         ]
+        //     }
+        // ];
 
         await this.SetPriceList(this.PriceList);
 
@@ -65,6 +65,7 @@ ParkingPricing.prototype.GetPriceList = async function (key) {
             that.caching.get("ParkingPriceList", function (err, reply) {
 
                 var priceList = err ? null : JSON.parse(reply);
+                this.PriceList = priceList;
                 resolve(priceList);
             });
 
@@ -173,8 +174,8 @@ ParkingPricing.prototype.CalculateBooking = function (startAt, endAt) {
     return {
         minuteQty: this.Minutes.length,
         hourQty: parseFloat(this.Minutes.length / 60).toFixed(2),
-        startAt: finalStart.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"),
-        endAt: finalEnd.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"),
+        startAt: finalStart ? finalStart.utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null,
+        endAt: finalEnd ? finalEnd.utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null,
         // startAt: finalStart,
         // endAt: finalEnd,
         price: totalPrice
