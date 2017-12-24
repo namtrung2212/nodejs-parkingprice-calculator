@@ -101,8 +101,8 @@ ParkingPricing.prototype.GetBookingOptions = function (createdAt, paidAmt) {
 ParkingPricing.prototype.TryGetBookingOptions = function (startAt, endAt, results, paidAmt, interval) {
 
     do {
-
-        var booking = this.CalculateBooking(startAt, endAt.add(interval, 'm'));
+        endAt = endAt.add(interval, 'm');
+        var booking = this.CalculateBooking(startAt, endAt);
         if (!booking || booking.minuteQty <= 0)
             return results;
 
