@@ -12,9 +12,9 @@ module.exports = ParkingPricing;
 
 ParkingPricing.prototype.InitPriceList = async function () {
 
-    var priceList = await this.GetPriceList();
+    this.PriceList = await this.GetPriceList();
 
-    if (!priceList) {
+    if (!this.PriceList) {
 
         // this.PriceList = [
         //     {
@@ -175,6 +175,8 @@ ParkingPricing.prototype.CalculateBooking = function (startAt, endAt) {
         hourQty: parseFloat(this.Minutes.length / 60).toFixed(2),
         startAt: finalStart.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"),
         endAt: finalEnd.utcOffset(7).format("YYYY-MM-DD HH:mm:ss"),
+        // startAt: finalStart,
+        // endAt: finalEnd,
         price: totalPrice
     };
 
