@@ -50,8 +50,8 @@ server.get('/CalculateBooking', function (req, res) {
 
         var endAt = moment(startAt).add(req.query.minuteQty, "m").utcOffset(7);
 
-        // console.log("order : startAt = " + startAt.format("YYYY-MM-DD HH:mm:ss"));
-        // console.log("order : endAt = " + endAt.format("YYYY-MM-DD HH:mm:ss"));
+        console.log("order : startAt = " + startAt.format("YYYY-MM-DD HH:mm:ss"));
+        console.log("order : endAt = " + endAt.format("YYYY-MM-DD HH:mm:ss"));
         booking = pricing.CalculateBooking(startAt, endAt);
 
     }
