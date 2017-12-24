@@ -129,6 +129,7 @@ ParkingPricing.prototype.CalculateBooking = function (startAt, endAt) {
 
     return {
         minuteQty: this.Minutes.length,
+        hourQty: parseFloat(this.Minutes.length / 60).toFixed(2),
         startAt: finalStart,
         endAt: finalEnd,
         price: totalPrice
