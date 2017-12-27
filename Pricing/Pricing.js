@@ -1,11 +1,9 @@
 
 var moment = require('moment');
 
-const RedisClient = require('redis');
+function Pricing(caching) {
 
-function Pricing() {
-
-    this.caching = RedisClient.createClient("6379", "localhost");
+    this.caching = caching;
     this.InitPriceList();
 };
 

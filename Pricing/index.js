@@ -6,12 +6,14 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var moment = require('moment');
 
+const RedisClient = require('redis');
+var caching = RedisClient.createClient("6379", "localhost");
+
 var Pricing = require("./Pricing");
-var pricing = new Pricing();
+var pricing = new Pricing(caching);
 
 var Booking = require("./Booking");
-var booking = new Booking(pricing);
-
+var booking = new Booking(caching, pricing);
 
 const server = express();
 server.use(bodyParser.urlencoded({ extended: false }))
@@ -152,7 +154,7 @@ server.get('/payment/sms', async function (req, res) {
     } else {
 
         res.json(null);
-
+        ``
     }
 
 });
@@ -160,6 +162,6 @@ server.get('/payment/sms', async function (req, res) {
 
 server.get('/booking/flush', async function (req, res) {
 
-    booking.caching.flushall();
+    caching.flushall();
     res.json("done");
 });
