@@ -24,8 +24,8 @@ Booking.prototype.GetTicket = async function (plateNumber, parkingPlace) {
 
             that.caching.get(plateNumber + parkingPlace, function (err, reply) {
 
-                console.log("err =" + JSON.parse(err));
-                console.log("reply =" + JSON.parse(reply));
+                console.log("err =" + err);
+                console.log("reply =" + reply);
                 var ticket = err ? null : JSON.parse(reply);
                 ticket = that.formatTicket(ticket);
                 resolve(ticket);
