@@ -58,8 +58,8 @@ Booking.prototype.PayTicket = async function (plateNumber, parkingPlace, paidAmt
         return null;
 
     ticket = {
-        PlateNumber: plateNumber,
-        ParkingPlace: parkingPlace,
+        plateNumber: plateNumber,
+        parkingPlace: parkingPlace,
         ...obj
     };
 
