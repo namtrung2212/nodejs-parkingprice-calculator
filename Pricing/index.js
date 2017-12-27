@@ -156,3 +156,10 @@ server.get('/payment/sms', async function (req, res) {
     }
 
 });
+
+
+server.get('/booking/flush', async function (req, res) {
+
+    booking.caching.flushall();
+    res.json("done");
+});
