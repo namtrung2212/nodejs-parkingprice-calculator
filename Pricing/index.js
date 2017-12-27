@@ -16,7 +16,7 @@ var booking = new Booking(pricing);
 const server = express();
 server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
-server.listen(3000);
+server.listen(57575);
 
 
 server.get('/pricing/priceList', async function (req, res) {
