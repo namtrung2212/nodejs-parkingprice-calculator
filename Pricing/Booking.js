@@ -12,6 +12,7 @@ module.exports = Booking;
 
 Booking.prototype.SetTicket = async function (ticket) {
     console.log(ticket.PlateNumber + ticket.ParkingPlace);
+    console.log(JSON.stringify(ticket));
     this.caching.set(ticket.PlateNumber + ticket.ParkingPlace, JSON.stringify(ticket));
 };
 
