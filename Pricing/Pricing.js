@@ -1,60 +1,61 @@
 
 var moment = require('moment');
+
 const RedisClient = require('redis');
 
-function ParkingPricing() {
+function Pricing() {
 
     this.caching = RedisClient.createClient("6379", "localhost");
     this.InitPriceList();
 };
 
-module.exports = ParkingPricing;
+module.exports = Pricing;
 
-ParkingPricing.prototype.InitPriceList = async function () {
+Pricing.prototype.InitPriceList = async function () {
 
     this.PriceList = await this.GetPriceList();
 
-    if (!this.PriceList) {
+    // if (!this.PriceList) {
 
-        this.PriceList = [
-            {
-                startHour: 6, endHour: 22, UOM: 60,
-                prices: [
-                    { from: 1, to: 2, unitprice: 25000, adjust: 0 },
-                    { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
-                    { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
-                ]
-            }
-        ];
+    // this.PriceList = [
+    //     {
+    //         startHour: 6, endHour: 22, UOM: 60,
+    //         prices: [
+    //             { from: 1, to: 2, unitprice: 25000, adjust: 0 },
+    //             { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
+    //             { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
+    //         ]
+    //     }
+    // ];
 
-        // this.PriceList = [
-        //     {
-        //         startHour: 0, endHour: 24, UOM: 60,
-        //         prices: [
-        //             { from: 1, to: 2, unitprice: 25000, adjust: 0 },
-        //             { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
-        //             { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
-        //         ]
-        //     },
-        //     {
-        //         startHour: 18, endHour: 6, UOM: 60,
-        //         prices: [
-        //             { from: 7, to: 12, unitprice: 0, adjust: 150000 }
-        //         ]
-        //     }
-        // ];
+    this.PriceList = [
+        {
+            startHour: 0, endHour: 24, UOM: 60,
+            prices: [
+                { from: 1, to: 2, unitprice: 25000, adjust: 0 },
+                { from: 3, to: 4, unitprice: 35000, adjust: 50000 },
+                { from: 5, to: 10000, unitprice: 45000, adjust: 120000 }
+            ]
+        },
+        {
+            startHour: 18, endHour: 6, UOM: 60,
+            prices: [
+                { from: 7, to: 12, unitprice: 0, adjust: 150000 }
+            ]
+        }
+    ];
 
-        await this.SetPriceList(this.PriceList);
+    await this.SetPriceList(this.PriceList);
 
-    }
+    //}
 };
 
-ParkingPricing.prototype.SetPriceList = async function (priceList) {
+Pricing.prototype.SetPriceList = async function (priceList) {
     this.PriceList = priceList;
     this.caching.set("ParkingPriceList", JSON.stringify(priceList));
 };
 
-ParkingPricing.prototype.GetPriceList = async function (key) {
+Pricing.prototype.GetPriceList = async function (key) {
 
     var that = this;
 
@@ -78,31 +79,40 @@ ParkingPricing.prototype.GetPriceList = async function (key) {
     });
 };
 
-
 //MONEY TO DURATION
-ParkingPricing.prototype.GetBookingOptions = function (createdAt, paidAmt) {
+Pricing.prototype.GetBookingOptions = async function (createdAt, paidAmt) {
 
     var startAt = moment(createdAt);
+    var endAt = moment(startAt);
 
     var results = [];
-
-    var endAt = moment(startAt);
-    results = this.TryGetBookingOptions(startAt, endAt, results, paidAmt, 60);
-
-    if (results.length > 0)
-        endAt = moment(results[results.length - 1].endAt);
-
-    results = this.TryGetBookingOptions(startAt, endAt, results, paidAmt, 1);
+    results = await this.TryGetBookingOptions(startAt, endAt, results, paidAmt, 60);
 
     return results;
 };
 
+//MONEY TO DURATION
+Pricing.prototype.GetSuitableBooking = async function (createdAt, paidAmt) {
 
-ParkingPricing.prototype.TryGetBookingOptions = function (startAt, endAt, results, paidAmt, interval) {
+    var startAt = moment(createdAt);
+    var endAt = moment(startAt);
+
+    var results = [];
+    results = await this.TryGetBookingOptions(startAt, endAt, results, paidAmt, 60);
+    if (results.length > 0)
+        return results[results.length - 1];
+
+    return null;
+}
+
+Pricing.prototype.TryGetBookingOptions = async function (startAt, endAt, results, paidAmt, interval) {
 
     do {
+
         endAt = endAt.add(interval, 'm');
-        var booking = this.CalculateBooking(startAt, endAt);
+
+        var booking = await this.CalculateBooking(startAt, endAt);
+
         if (!booking || booking.minuteQty <= 0
             || (results.length > 0 && results[results.length - 1].minuteQty == booking.minuteQty))
             return results;
@@ -122,7 +132,7 @@ ParkingPricing.prototype.TryGetBookingOptions = function (startAt, endAt, result
             }
         }
 
-        endAt = moment(booking.endAt);
+        endAt = moment.unix(booking.endAt);
 
 
     } while (booking.price <= paidAmt);
@@ -130,25 +140,24 @@ ParkingPricing.prototype.TryGetBookingOptions = function (startAt, endAt, result
     return results;
 }
 
-
 //DURATION TO MONEY
-ParkingPricing.prototype.CalculateBooking = function (startAt, endAt) {
+Pricing.prototype.CalculateBooking = async function (startAt, endAt) {
 
-    this.initMinutes(startAt, endAt);
+    await this.initMinutes(startAt, endAt);
 
-    this.refreshLines();
+    await this.refreshLines();
 
     for (var i = 0; i < this.Minutes.length; i++) {
         var minute = this.Minutes[i];
 
-        var minPricing = this.getMinPricing(minute);
+        var minPricing = await this.getMinPricing(minute);
         if (minPricing && minPricing.firstIndex == i) {
 
             for (var z = i; z <= minPricing.lastIndex; z++) {
                 var curMinute = this.Minutes[z];
-                this.validatePricings(curMinute);
+                await this.validatePricings(curMinute);
             }
-            this.refreshLines();
+            await this.refreshLines();
         }
     }
 
@@ -181,37 +190,24 @@ ParkingPricing.prototype.CalculateBooking = function (startAt, endAt) {
     return {
         minuteQty: this.Minutes.length,
         hourQty: parseFloat(this.Minutes.length / 60).toFixed(2),
-        startAt: finalStart ? moment(finalStart).utcOffset(0).format("YYYY-MM-DD HH:mm:ss") : null,
-        endAt: finalEnd ? moment(finalEnd).utcOffset(0).format("YYYY-MM-DD HH:mm:ss") : null,
-        // startAt: finalStart,
-        // endAt: finalEnd,
+
+        startAt: (finalStart ? finalStart.unix() : null),
+        endAt: (finalEnd ? finalEnd.unix() : null),
+
+        startAtVN: (finalStart ? moment.unix(finalStart.unix()).utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null),
+        endAtVN: (finalEnd ? moment.unix(finalEnd.unix()).utcOffset(7).format("YYYY-MM-DD HH:mm:ss") : null),
+
         price: totalPrice
     };
 
 };
 
-ParkingPricing.prototype.initMinutes = function (startAt, endAt) {
+Pricing.prototype.initMinutes = async function (startAt, endAt) {
 
     this.Minutes = [];
 
-    startAt = moment({
-        year: startAt.year(),
-        month: startAt.month(),
-        days: startAt.date(),
-        hour: startAt.hours(),
-        minute: startAt.minutes(),
-        second: 0
-    });
-
-    endAt = moment({
-        year: endAt.year(),
-        month: endAt.month(),
-        days: endAt.date(),
-        hour: endAt.hours(),
-        minute: endAt.minutes(),
-        second: 0
-    });
-
+    startAt = moment(startAt).second(0);
+    endAt = moment(endAt).second(0);
 
     var current = moment(startAt);
 
@@ -229,7 +225,7 @@ ParkingPricing.prototype.initMinutes = function (startAt, endAt) {
         for (var i = 0; i < this.PriceList.length; i++) {
             var pricing = this.PriceList[i];
 
-            var isValid = this.isInRangeHours(minute.startTime, pricing.startHour, pricing.endHour);
+            var isValid = await this.isInRangeHours(minute.startTime, pricing.startHour, pricing.endHour);
             if (isValid)
                 minute.priceList.push({
                     index: i,
@@ -248,27 +244,11 @@ ParkingPricing.prototype.initMinutes = function (startAt, endAt) {
 
 }
 
-ParkingPricing.prototype.isInRangeHours = function (objTime, startHourInday, endHourInDay) {
+Pricing.prototype.isInRangeHours = async function (objTime, startHourInday, endHourInDay) {
 
-    var momentAt = objTime.utcOffset(7);
-
-    var minTime = moment({
-        year: momentAt.year(),
-        month: momentAt.month(),
-        days: momentAt.date(),
-        hour: startHourInday,
-        minute: 0,
-        second: 0
-    });
-
-    var maxTime = moment({
-        year: momentAt.year(),
-        month: momentAt.month(),
-        days: momentAt.date(),
-        hour: endHourInDay,
-        minute: 0,
-        second: 0
-    });
+    var momentAt = moment(objTime).utcOffset(7);
+    var minTime = moment(momentAt).utcOffset(7).hour(startHourInday).minute(0).second(0);
+    var maxTime = moment(momentAt).utcOffset(7).hour(endHourInDay).minute(0).second(0);
 
     if (startHourInday > endHourInDay)
         maxTime = maxTime.add(1, 'd');
@@ -290,7 +270,7 @@ ParkingPricing.prototype.isInRangeHours = function (objTime, startHourInday, end
 
 }
 
-ParkingPricing.prototype.calcPrice = function (pricing, minuteQty) {
+Pricing.prototype.calcPrice = async function (pricing, minuteQty) {
 
     var result = Number.MAX_VALUE;
 
@@ -307,7 +287,7 @@ ParkingPricing.prototype.calcPrice = function (pricing, minuteQty) {
     return result;
 }
 
-ParkingPricing.prototype.getMinPricing = function (minute) {
+Pricing.prototype.getMinPricing = async function (minute) {
 
     var minValue = Number.MAX_VALUE;
     var minPricing = null;
@@ -323,7 +303,7 @@ ParkingPricing.prototype.getMinPricing = function (minute) {
     return minPricing;
 }
 
-ParkingPricing.prototype.validatePricings = function (minute) {
+Pricing.prototype.validatePricings = async function (minute) {
 
     var minValue = Number.MAX_VALUE;
 
@@ -339,20 +319,20 @@ ParkingPricing.prototype.validatePricings = function (minute) {
     }
 }
 
-ParkingPricing.prototype.refreshLines = function () {
+Pricing.prototype.refreshLines = async function () {
 
     for (var i = 0; i < this.Minutes.length; i++) {
         var minute = this.Minutes[i];
 
         for (var j = 0; j < minute.priceList.length; j++) {
             var pricing = minute.priceList[j];
-            this.refreshLine(i, pricing.index);
+            await this.refreshLine(i, pricing.index);
         }
     }
 
 }
 
-ParkingPricing.prototype.refreshLine = function (startMinuteIndex, pricingIndex) {
+Pricing.prototype.refreshLine = async function (startMinuteIndex, pricingIndex) {
 
     var minute = this.Minutes[startMinuteIndex];
 
@@ -381,7 +361,7 @@ ParkingPricing.prototype.refreshLine = function (startMinuteIndex, pricingIndex)
 
     if (!pricing) return;
 
-    var priceAmt = this.calcPrice(pricing, minuteQty);
+    var priceAmt = await this.calcPrice(pricing, minuteQty);
 
     for (var z = 0; z < minuteQty; z++) {
 

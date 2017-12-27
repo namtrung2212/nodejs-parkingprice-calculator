@@ -6,8 +6,11 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var moment = require('moment');
 
-var ParkingPricing = require("./ParkingPricing");
-var pricing = new ParkingPricing();
+var Pricing = require("./Pricing");
+var pricing = new Pricing();
+
+var Booking = require("./Booking");
+var booking = new Booking(pricing);
 
 
 const server = express();
@@ -15,19 +18,38 @@ server.use(bodyParser.urlencoded({ extended: false }))
 server.use(bodyParser.json())
 server.listen(3000);
 
-server.get('/GetBookingOptions', function (req, res) {
+
+server.get('/pricing/priceList', async function (req, res) {
+    var priceList = await pricing.GetPriceList();
+    res.json(priceList);
+});
+
+server.post('/pricing/priceList', async function (req, res) {
+
+    var priceList = req.body;
+
+    await pricing.SetPriceList(priceList);
+
+    priceList = await pricing.GetPriceList();
+    res.json(priceList);
+
+});
+
+//MONEY TO DURATION
+server.get('/pricing/options', async function (req, res) {
 
     if (req.query.startAt && req.query.paidAmt) {
 
         var startAt;
         if (req.query.startAt == "now")
-            startAt = moment.utc().utcOffset(7);
+            startAt = moment();
         else
-            startAt = moment.unix(req.query.startAt).utcOffset(7);
+            startAt = moment.unix(req.query.startAt);
 
         var paidAmt = req.query.paidAmt;
+        paidAmt = parseFloat(paidAmt);
 
-        var options = pricing.GetBookingOptions(startAt, paidAmt);
+        var options = await pricing.GetBookingOptions(startAt, paidAmt);
         res.json(options);
 
     } else {
@@ -36,44 +58,101 @@ server.get('/GetBookingOptions', function (req, res) {
 
 });
 
-server.get('/CalculateBooking', function (req, res) {
+//MONEY TO DURATION
+server.get('/pricing/suitable', async function (req, res) {
 
+    if (req.query.startAt && req.query.paidAmt) {
 
-    var booking = {};
+        var startAt;
+        if (req.query.startAt == "now")
+            startAt = moment();
+        else
+            startAt = moment.unix(req.query.startAt);
+
+        var paidAmt = req.query.paidAmt;
+        paidAmt = parseFloat(paidAmt);
+
+        var ticket = await pricing.GetSuitableBooking(startAt, paidAmt);
+
+        res.json(ticket);
+
+    } else {
+        res.json({});
+    }
+
+});
+
+//DURATION TO MONEY
+server.get('/pricing/calculate', async function (req, res) {
+
+    var ticket = {};
 
     if (req.query.startAt && req.query.minuteQty) {
 
         var startAt;
         if (req.query.startAt == "now")
-            startAt = moment.utc().utcOffset(7);
+            startAt = moment();
         else
-            startAt = moment.unix(req.query.startAt).utcOffset(7);
+            startAt = moment.unix(req.query.startAt);
 
-        var endAt = moment(startAt).add(req.query.minuteQty, "m").utcOffset(7);
+        var endAt = moment(startAt).add(req.query.minuteQty, "m");
 
-        // console.log("order : startAt = " + startAt.format("YYYY-MM-DD HH:mm:ss"));
-        // console.log("order : endAt = " + endAt.format("YYYY-MM-DD HH:mm:ss"));
-        booking = pricing.CalculateBooking(startAt, endAt);
+        ticket = await pricing.CalculateBooking(startAt, endAt);
 
     }
 
-    res.json(booking);
+    res.json(ticket);
 
 });
 
+server.get('/booking/ticket', async function (req, res) {
 
-server.get('/GetPriceList', async function (req, res) {
-    var priceList = await pricing.GetPriceList();
-    res.json(priceList);
+    var plateNumber = req.query.plateNumber;
+    var parkingPlace = req.query.parkingPlace;
+    if (plateNumber && parkingPlace) {
+
+        var ticket = await booking.GetTicket(plateNumber, parkingPlace);
+        res.json(ticket);
+
+    } else {
+
+        res.json(null);
+
+    }
+
 });
 
-server.post('/SetPriceList', async function (req, res) {
+server.get('/payment/card', async function (req, res) {
 
-    var priceList = req.body;
+    var plateNumber = req.query.plateNumber;
+    var parkingPlace = req.query.parkingPlace;
+    var paidAmt = req.query.paidAmt;
+    paidAmt = parseFloat(paidAmt);
 
-    await pricing.SetPriceList(priceList);
+    if (plateNumber && parkingPlace && paidAmt) {
 
-    priceList = await pricing.GetPriceList();
-    res.json(priceList);
+        var ticket = await booking.PayByCard(plateNumber, parkingPlace, paidAmt);
+        res.json(ticket);
+
+    } else {
+
+        res.json(null);
+    }
+
+});
+
+server.get('/payment/sms', async function (req, res) {
+
+    var sms = req.query.sms;
+    if (sms) {
+
+        var ticket = await booking.PayBySMS(sms);
+        res.json(ticket);
+
+    } else {
+
+        res.json(null);
+
+    }
 
 });
