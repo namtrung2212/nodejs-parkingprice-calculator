@@ -368,7 +368,9 @@ Pricing.prototype.refreshLine = async function (startMinuteIndex, pricingIndex) 
     if (!pricing) return;
 
     var totalPrice = await this.calcPrice(pricing, preMinuteQty + minuteQty);
-    var priceAmt = totalPrice - (await this.calcPrice(pricing, preMinuteQty));
+    var priceAmt = totalPrice;
+    if (preMinuteQty > 0)
+        priceAmt = priceAmt - (await this.calcPrice(pricing, preMinuteQty));
 
     for (var z = 0; z < minuteQty; z++) {
 
