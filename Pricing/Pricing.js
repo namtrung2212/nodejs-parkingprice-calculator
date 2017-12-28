@@ -342,6 +342,14 @@ Pricing.prototype.refreshLine = async function (startMinuteIndex, pricingIndex) 
             return;
     }
 
+    var preMinuteQty = 0;
+    for (var z = 0; z < startMinuteIndex; z++) {
+        var pricings = this.Minutes[z].priceList.filter(c => c.index == pricingIndex);
+        if (pricings.length > 0 && pricings[0].isValid) {
+            preMinuteQty++;
+        }
+    }
+
     var minuteQty = 0;
     var pricing = null;
     for (var z = startMinuteIndex; z < this.Minutes.length; z++) {
@@ -359,7 +367,8 @@ Pricing.prototype.refreshLine = async function (startMinuteIndex, pricingIndex) 
 
     if (!pricing) return;
 
-    var priceAmt = await this.calcPrice(pricing, minuteQty);
+    var totalPrice = await this.calcPrice(pricing, preMinuteQty + minuteQty);
+    var priceAmt = totalPrice - (await this.calcPrice(pricing, preMinuteQty));
 
     for (var z = 0; z < minuteQty; z++) {
 
