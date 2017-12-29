@@ -185,9 +185,11 @@ Pricing.prototype.CalculateBooking = async function (startAt, endAt) {
 
     }
 
+    var minuteQty = ((finalStart != null && finalEnd != null) ? finalEnd.diff(finalStart, 'minutes') : null);
+
     return {
-        minuteQty: this.Minutes.length,
-        hourQty: parseFloat(this.Minutes.length / 60).toFixed(2),
+        minuteQty: minuteQty,
+        hourQty: (minuteQty ? parseFloat(minuteQty / 60).toFixed(2) : null),
 
         startAt: (finalStart ? finalStart.unix() : null),
         endAt: (finalEnd ? finalEnd.unix() : null),
@@ -219,6 +221,7 @@ Pricing.prototype.initMinutes = async function (startAt, endAt) {
             priceList: [],
             accumPrice: 0
         };
+
 
         for (var i = 0; i < this.PriceList.length; i++) {
             var pricing = this.PriceList[i];

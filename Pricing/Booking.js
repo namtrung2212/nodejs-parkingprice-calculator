@@ -11,6 +11,10 @@ function Booking(caching, pricing) {
 module.exports = Booking;
 
 Booking.prototype.SetTicket = async function (ticket) {
+
+    var obj = { ...ticket };
+    obj.startAt = String(ticket.startAt);
+    obj.endAt = String(ticket.endAt);
     this.caching.set(ticket.plateNumber + ticket.parkingPlace, JSON.stringify(ticket));
 };
 
@@ -25,7 +29,11 @@ Booking.prototype.GetTicket = async function (plateNumber, parkingPlace) {
             that.caching.get(plateNumber + parkingPlace, function (err, reply) {
 
                 var ticket = err ? null : JSON.parse(reply);
-                ticket = that.formatTicket(ticket);
+                if (ticket) {
+                    ticket.startAt = parseFloat(ticket.startAt);
+                    ticket.endAt = parseFloat(ticket.endAt);
+                    ticket = that.formatTicket(ticket);
+                }
                 resolve(ticket);
             });
 
@@ -44,7 +52,7 @@ Booking.prototype.PayTicket = async function (plateNumber, parkingPlace, paidAmt
 
     var ticket = await this.GetTicket(plateNumber, parkingPlace);
     if (ticket) {
-        startAt = ticket.startAt;
+        startAt = moment.unix(parseFloat(ticket.startAt)).utcOffset(7);
         paidAmt += parseFloat(ticket.paidAmt);
     }
 

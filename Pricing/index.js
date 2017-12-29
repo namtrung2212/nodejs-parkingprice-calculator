@@ -154,7 +154,7 @@ server.get('/payment/sms', async function (req, res) {
     } else {
 
         res.json(null);
-        ``
+
     }
 
 });
