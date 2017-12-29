@@ -343,12 +343,27 @@ Pricing.prototype.refreshLine = async function (startMinuteIndex, pricingIndex) 
     }
 
     var preMinuteQty = 0;
+
+    // option 1
+    // for (var z = 0; z < startMinuteIndex; z++) {
+    //     var pricings = this.Minutes[z].priceList.filter(c => c.index == pricingIndex);
+    //     if (pricings.length > 0 && pricings[0].isValid) {
+    //         preMinuteQty++;
+    //     }
+    // }
+
+    // option 2
+    var firstIndex = -1;
     for (var z = 0; z < startMinuteIndex; z++) {
         var pricings = this.Minutes[z].priceList.filter(c => c.index == pricingIndex);
         if (pricings.length > 0 && pricings[0].isValid) {
-            preMinuteQty++;
+            firstIndex = z;
+            break;
         }
     }
+    if (firstIndex >= 0)
+        preMinuteQty = startMinuteIndex - firstIndex;
+
 
     var minuteQty = 0;
     var pricing = null;
