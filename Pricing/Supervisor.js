@@ -25,6 +25,9 @@ Supervisor.prototype.GetNotices = async function () {
             that.caching.get("supervisor-notices", function (err, reply) {
 
                 var notices = err ? [] : JSON.parse(reply);
+                if (!notices)
+                    notices = [];
+
                 resolve(notices);
             });
 
