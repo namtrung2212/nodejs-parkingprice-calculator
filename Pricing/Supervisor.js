@@ -24,13 +24,13 @@ Supervisor.prototype.GetNotices = async function () {
 
             that.caching.get("supervisor-notices", function (err, reply) {
 
-                var notices = err ? null : JSON.parse(reply);
+                var notices = err ? [] : JSON.parse(reply);
                 resolve(notices);
             });
 
         } catch (error) {
 
-            resolve(null);
+            resolve([]);
         }
     }).catch(err => {
 
