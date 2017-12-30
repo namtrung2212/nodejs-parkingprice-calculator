@@ -9,6 +9,9 @@ var moment = require('moment');
 const RedisClient = require('redis');
 var caching = RedisClient.createClient("6379", "localhost");
 
+var Supervisor = require("./Supervisor");
+var supervisor = new Supervisor(caching);
+
 var Pricing = require("./Pricing");
 var pricing = new Pricing(caching);
 
@@ -164,4 +167,17 @@ server.get('/booking/flush', async function (req, res) {
 
     caching.flushall();
     res.json("done");
+});
+
+
+
+server.post('/supervisor/notices', async function (req, res) {
+
+    var notices = req.body;
+
+    await supervisor.SetNotices(notices);
+
+    notices = await supervisor.GetNotices();
+    res.json(notices);
+
 });
