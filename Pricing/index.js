@@ -171,6 +171,11 @@ server.get('/booking/flush', async function (req, res) {
 
 
 
+server.get('/supervisor/notices', async function (req, res) {
+    var notices = await supervisor.GetNotices();
+    res.json(notices);
+});
+
 server.post('/supervisor/notices', async function (req, res) {
 
     var notices = req.body;
