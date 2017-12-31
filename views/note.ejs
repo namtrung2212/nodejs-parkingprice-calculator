@@ -169,6 +169,46 @@
         </div>
     </div>
 
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class=" text-left  font-weight-bold">Lịch phân công</h1>
+        </div>
+        <div class="panel-body">
+
+            <% plans.forEach((plan, index) => { %>
+
+                <h2 class=" text-left  font-weight-bold">
+                    <%= plan.name %>
+                </h2>
+
+                <table class="table table-striped table-bordered table-hover">
+
+                    <tbody>
+
+                        <tr>
+                            <th scope="row" class="h2 font-weight-light text-center" style=" font-weight: 300; font-size: 35px; ">SÁNG</th>
+                            <td class="h2 font-weight-light text-left" style=" font-weight: 200; font-size: 35px; ">
+                                <%= plan.morning %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row" class="h2 font-weight-light text-center" style=" font-weight: 300; font-size: 35px; ">CHIỀU</th>
+                            <td class="h2 font-weight-light text-left" style=" font-weight: 200; font-size: 35px; ">
+                                <%= plan.afternoon %>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <% }) %>
+
+
+        </div>
+    </div>
+
+
 </body>
 
 
