@@ -20,9 +20,62 @@ var booking = new Booking(caching, pricing);
 
 const server = express();
 server.use(bodyParser.urlencoded({ extended: false }))
-server.use(bodyParser.json())
+server.use(bodyParser.json());
+server.set('view engine', 'ejs');
 server.listen(3000);
 
+server.get('/note', function (req, res) {
+
+    var prepares = [
+        { note: "Tập trung tại điểm đỗ TN163 đối diện khách sạn Metropole, sát vườn hoa Diên Hồng" },
+        { note: "Nghe phổ biến triển khai, được phân công điểm đỗ, nhận tờ rơi + áo + mẫu báo cáo" },
+        { note: "Quay về điểm đỗ mình phụ trách buổi sáng (từ 9AM đến 12AM)" },
+        { note: "Điểm buổi chiều (từ 1.30pm đến 4.30pm)" }
+    ];
+
+    var steps = [
+        { note: "Chủ động phát tờ rơi cho khách hàng" },
+        { note: "Giới thiệu iParking được áp dụng theo quyết định của UBND TP Hà Nội" },
+        { note: "Giới thiệu các phương thức thanh toán của iParking" },
+        { note: "Không dành quá nhiều thời gian để hướng dẫn khách cài đặt hoặc nhắn tin" },
+        { note: "Không tranh cãi với khách hàng hoặc trật tự viên" },
+        { note: "Ghi chú lại các điểm không hợp tác hoặc có vấn đề cần xử lý" }
+    ];
+
+    var paymentMethods = [
+
+        { note: "Thanh toán bằng app (sử dụng thẻ VISA, MasterCard..) và 1 số thẻ ATM" },
+        { note: "Nạp tiền vào tài khoản trả trước để sử dụng dần trên ứng dụng" },
+
+        { note: "Thanh toán bằng cú pháp tin nhắn" },
+        { note: "Nhà mạng Viettel hoạt động tốt. Vinaphone, Mobifone, Vietnamobile đang hoàn thiện hợp đồng" },
+
+    ];
+
+    var infos = [
+        { note: "Tăng giá theo bậc thang là quyết định của UBND TP Hà Nội, iParking chỉ là hệ thống phần mềm quản lý." },
+        { note: "Thanh toán bằng tiền mặt thì sẽ được ghi nhận vào hệ thống => minh bạch thu ngân sách" }
+    ];
+
+
+    var contacts = [
+        { note: "Phụ trách chung : a Vinh (0949200690)" },
+        { note: "Quận Hoàn Kiếm, Ba Đình : a Long (0978977486)" },
+        { note: "Quận Hai Bà Trưng, Đống Đa : a Trung (0905798117)" },
+        { note: "Nghiệp vụ : chị Kim (0989898476) hoặc a Trung" },
+        { note: "Kỹ thuật: a Đạt (0983271819), a Hiếu (0975126124)" }
+    ];
+
+    var forFG = {
+        steps: steps,
+        methods: paymentMethods,
+        infos: infos,
+        contacts: contacts
+    };
+
+    res.render('note', forFG);
+
+});
 
 server.get('/pricing/priceList', async function (req, res) {
     var priceList = await pricing.GetPriceList();

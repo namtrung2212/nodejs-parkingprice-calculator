@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Các điểm cần lưu ý trong quá trình triển khai</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+        crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r"
+        crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="/views/note.css">
+
+    <script type="text/javascript">
+        function reloadPage() {
+            location.reload(true);
+        }
+    </script>
+
+</head>
+
+<body class="container " style="
+    width: 95% !important
+">
+
+    <p>
+        <h1 class=" text-center  font-weight-bold">TÌNH NGUYỆN VIÊN CẦN LƯU Ý</h1>
+    </p>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class=" text-left  font-weight-bold">Trình tự</h1>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped  table-hover">
+
+                <tbody>
+
+                    <% steps.forEach((step, index) => { %>
+                        <tr>
+                            <th scope="row" class="h2 font-weight-light text-center" style=" font-weight: 400; font-size: 40px; ">
+                                <%= index + 1 %>
+                            </th>
+                            <td class="h2 font-weight-light text-left" style=" font-weight: 200; font-size: 40px; ">
+                                <%= step.note %>
+                            </td>
+                        </tr>
+
+                        <% }) %>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class=" text-left  font-weight-bold">Phương thức thanh toán</h1>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped  table-hover">
+
+                <tbody>
+
+                    <% methods.forEach((method, index) => { %>
+                        <tr>
+                            <th scope="row" class="h2 font-weight-light text-center" style=" font-weight: 400; font-size: 40px; ">
+                                <%= index + 1 %>
+                            </th>
+                            <td class="h2 font-weight-light text-left" style=" font-weight: 200; font-size: 40px; ">
+                                <%= method.note %>
+                            </td>
+                        </tr>
+
+                        <% }) %>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class=" text-left  font-weight-bold">Thông tin</h1>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped  table-hover">
+
+                <tbody>
+
+                    <% infos.forEach((info, index) => { %>
+                        <tr>
+                            <th scope="row" class="h2 font-weight-light text-center" style=" font-weight: 400; font-size: 40px; ">
+                                <%= index + 1 %>
+                            </th>
+                            <td class="h2 font-weight-light text-left" style=" font-weight: 200; font-size: 40px; ">
+                                <%= info.note %>
+                            </td>
+                        </tr>
+
+                        <% }) %>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class=" text-left  font-weight-bold">Liên hệ</h1>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped table-hover">
+
+                <tbody>
+
+                    <% contacts.forEach((contact, index) => { %>
+                        <tr>
+                            <th scope="row" class="h2 font-weight-light text-center" style=" font-weight: 400; font-size: 40px; ">
+                                <%= index + 1 %>
+                            </th>
+                            <td class="h2 font-weight-light text-left" style=" font-weight: 200; font-size: 40px; ">
+                                <%= contact.note %>
+                            </td>
+                        </tr>
+
+                        <% }) %>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</body>
+
+
+</html>
