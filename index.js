@@ -67,6 +67,7 @@ server.get('/note', function (req, res) {
     ];
 
     var forFG = {
+        prepares: prepares,
         steps: steps,
         methods: paymentMethods,
         infos: infos,

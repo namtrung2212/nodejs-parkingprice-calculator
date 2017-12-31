@@ -36,6 +36,33 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
+            <h1 class=" text-left  font-weight-bold">Chuẩn bị</h1>
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped  table-hover">
+
+                <tbody>
+
+                    <% prepares.forEach((prepare, index) => { %>
+                        <tr>
+                            <th scope="row" class="h2 font-weight-light text-center" style=" font-weight: 400; font-size: 40px; ">
+                                <%= index + 1 %>
+                            </th>
+                            <td class="h2 font-weight-light text-left" style=" font-weight: 200; font-size: 40px; ">
+                                <%= prepare.note %>
+                            </td>
+                        </tr>
+
+                        <% }) %>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
             <h1 class=" text-left  font-weight-bold">Trình tự</h1>
         </div>
         <div class="panel-body">
@@ -60,6 +87,7 @@
 
         </div>
     </div>
+
     <div class="panel panel-default">
         <div class="panel-heading">
             <h1 class=" text-left  font-weight-bold">Phương thức thanh toán</h1>
