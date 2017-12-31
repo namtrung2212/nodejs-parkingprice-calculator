@@ -40,7 +40,8 @@ server.get('/note', function (req, res) {
         { note: "Không dành quá nhiều thời gian để hướng dẫn khách cài đặt hoặc nhắn tin" },
         { note: "Không tranh cãi với khách hàng hoặc trật tự viên" },
         { note: "Ghi chú lại các điểm không hợp tác hoặc có vấn đề cần xử lý" },
-        { note: "Hạn chế trả lời báo chí. Chỉ trả lời những gì mình chắc chắn" }
+        { note: "Hạn chế trả lời báo chí. Chỉ trả lời những gì mình chắc chắn" },
+        { note: "Không chia sẽ đường link này (iparking.namtrung2212.com/note) cho trật tự viên và báo chí" }
     ];
 
     var paymentMethods = [
