@@ -30,9 +30,10 @@ server.get('/note', function (req, res) {
         { note: "(*) 30 PHÚT PHẢI XEM LẠI TRANG NÀY ! " },
         { note: "(*) Khách hàng chủ động lựa chọn phương thức thanh toán mà họ muốn." },
         { note: "(*) Vé tháng : Hợp đồng ký xong mới được nhập vào máy tính bảng" },
+        { note: "(*) Vinaphone, Mobifone, Vietnamobile đang hoàn thiện hợp đồng" },
         { note: "(*) Ghi lại biển số xe mà khách đã thanh toán bằng tiền mặt." },
         { note: "(*) Không chi trả bất cứ khỏan phí nào cho các trật tự viên" },
-        { note: "(*) Gọi về hotline bên dưới ngay khi có sự chống đối hoặc cản trở của các bên" },
+        { note: "(*) Gọi về hotline bên dưới ngay khi có sự chống đối hoặc cản trở của các bên" }
     ];
 
     var steps = [
