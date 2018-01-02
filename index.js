@@ -26,11 +26,13 @@ server.listen(3000);
 
 server.get('/note', function (req, res) {
 
-    var prepares = [
-        { note: "Tập trung tại điểm đỗ HK030 đối diện khách sạn Metropole, sát vườn hoa Diên Hồng" },
-        { note: "Nghe phổ biến triển khai, được phân công điểm đỗ, nhận tờ rơi + áo + mẫu báo cáo" },
-        { note: "Quay về điểm đỗ mình phụ trách buổi sáng (từ 9AM đến 12AM)" },
-        { note: "Điểm buổi chiều (từ 1.30pm đến 4.30pm)" }
+    var notices = [
+        { note: "(*) 30 PHÚT PHẢI XEM LẠI TRANG NÀY ! " },
+        { note: "(*) Khách hàng chủ động lựa chọn phương thức thanh toán mà họ muốn." },
+        { note: "(*) Vé tháng : Hợp đồng ký xong mới được nhập vào máy tính bảng" },
+        { note: "(*) Ghi lại biển số xe mà khách đã thanh toán bằng tiền mặt." },
+        { note: "(*) Không chi trả bất cứ khỏan phí nào cho các trật tự viên" },
+        { note: "(*) Gọi về hotline bên dưới ngay khi có sự chống đối hoặc cản trở của các bên" },
     ];
 
     var steps = [
@@ -44,13 +46,32 @@ server.get('/note', function (req, res) {
         { note: "Không chia sẽ đường link này (iparking.namtrung2212.com/note) cho trật tự viên và báo chí" }
     ];
 
-    var paymentMethods = [
+    var veluot = [
 
-        { note: "Thanh toán bằng app (sử dụng thẻ VISA, MasterCard..) và 1 số thẻ ATM" },
-        { note: "Nạp tiền vào tài khoản trả trước để sử dụng dần trên ứng dụng" },
+        { note: "Thanh toán qua app : dùng thẻ quốc tế (VISA, MasterCard..) và 1 số thẻ ATM" },
+        { note: "Thanh toán qua app : dùng tài khoản trả trước trên ứng dụng" },
+        { note: "Thanh toán qua tin nhắn: cú pháp niêm yết trên bảng và tờ rơi" },
 
-        { note: "Thanh toán bằng cú pháp tin nhắn" },
-        { note: "Nhà mạng Viettel hoạt động tốt. Vinaphone, Mobifone, Vietnamobile đang hoàn thiện hợp đồng" },
+        { note: "Nhà mạng Viettel hoạt động tốt." },
+        { note: "Vinaphone, Mobifone, Vietnamobile đang hoàn thiện hợp đồng" },
+
+        { note: "Nạp tiền vào TK trả trước : dùng thẻ quốc tế hoặc nội đia tại trang web iparking.vn" }
+
+    ];
+
+    var vethang = [
+
+        { note: "Khách hàng làm việc với cty khai thác điểm đỗ xe để làm thủ tục ký HĐ" },
+        { note: "Hợp đồng được ký hoàn tất mới nhập vào máy tính bảng" },
+        { note: "Khách hàng sẽ nhận được Mã Thanh Toán gửi qua tin nhắn." },
+        { note: "Khách hàng dùng Mã Thanh Toán nếu thanh toán qua iparking.vn hoặc Internet Banking" },
+
+        { note: "Thanh toán qua app : dùng thẻ quốc tế (VISA, MasterCard..) và 1 số thẻ ATM" },
+        { note: "Thanh toán qua app : dùng tài khoản trả trước trên ứng dụng" },
+        { note: "Thanh toán qua iparking.vn : dùng thẻ quốc tế (VISA, MasterCard..) và 1 số thẻ ATM" },
+        { note: "Thanh toán qua Internet Banking : dùng thẻ quốc tế (VISA, MasterCard..) và 1 số thẻ ATM" },
+
+        { note: "Nạp tiền vào TK trả trước : dùng thẻ quốc tế hoặc nội đia tại trang web iparking.vn" }
 
     ];
 
@@ -68,102 +89,13 @@ server.get('/note', function (req, res) {
         { note: "Kỹ thuật công ty HPC : a Đạt (0983271819), a Hiếu (0975126124)" }
     ];
 
-    var plans = [
-        {
-            name: "HÀ THỊ THÙY DINH",
-            morning: "HK024 : số 18-22 Ngô Quyền",
-            afternoon: "HK025 : số 34-74 Ngô Quyền",
-
-        },
-        {
-            name: "HOÀNG THU THỦY",
-            morning: "HK041 : số 2-4 Cổ Tân (cạnh vườn hoa)",
-            afternoon: "HK027 : số 3-20 Lý Thái Tổ",
-
-        },
-        {
-            name: "HÀ THỊ HỒNG",
-            morning: "HK030 : sát vườn hoa Diên Hồng, đối diện khách sạn Metropol",
-            afternoon: "HK034 : số 6-26 Nhà Thờ",
-
-        },
-        {
-            name: "ĐỖ THỊ MỸ HẢI",
-            morning: "DD002 : Văn Miếu (từ Nguyễn Thái Học đến Nguyễn Khuyến)",
-            afternoon: "HK035 : Hỏa Lò (Sát tường rào Viện kiểm sát)",
-
-        },
-        {
-            name: "HOÀNG THỊ THU HÀ",
-            morning: "HK051 : số 18 - 22 Ngô Quyền",
-            afternoon: "HK051 : số 10-108 Hàng Trống",
-
-        },
-        {
-            name: "NGÔ THỊ HỒNG DUYÊN",
-            morning: "BD003 : Trần Huy Liệu (đối diện khách sạn Hà Nội)",
-            afternoon: "BD004 : La Thành (trước khách sạn Heritage)",
-
-        },
-        {
-            name: "VŨ THỊ THANH THẢO",
-            morning: "BD008 : Ngọc Hà (đầu dốc cạnh Công viên Bách Thảo)",
-            afternoon: "BD008 : Ngọc Hà (đầu dốc cạnh Công viên Bách Thảo)",
-
-        },
-        {
-            name: "ĐỖ THỊ PHƯƠNG LIÊN",
-            morning: "BD009 : số 43-91 Giang Văn Minh ",
-            afternoon: "BD009 : bên số chẵn",
-
-        },
-        {
-            name: "PHẠM HỒNG TRANG",
-            morning: "BD011 : Cầu Giấy (ngã ba Voi Phục-Cầu Giấy)",
-            afternoon: "BD011 : Cầu Giấy (ngã ba Voi Phục-Cầu Giấy)",
-
-        },
-        {
-            name: "BÙI MAI LIÊN",
-            morning: "HB028 : số 38-48A Tăng Bạt Hổ",
-            afternoon: "HB035 : số 58A-76 Ngô Thì Nhậm",
-
-        },
-        {
-            name: "TRẦN THỊ BÍCH HƯỜNG",
-            morning: "HB032 : số 8-38 Lê Đại Hành",
-            afternoon: "HB033 : số 42 Lê Đại Hành",
-
-        },
-        {
-            name: "LÊ HƯƠNG LY",
-            morning: "HB036 : số 36-76 Nguyễn Du",
-            afternoon: "HB045 : số 1-55 Lê Văn Hưu",
-
-        },
-        {
-            name: "NGUYỄN THỊ HƯƠNG",
-            morning: "HB038 : số 4-60 Triệu Việt Vương",
-            afternoon: "HB039 : số 154-184 Triệu Việt Vương",
-
-        },
-        {
-            name: "NG.T LAM GIANG",
-            morning: "HB040 : Trần Nhân Tông (từ Trần Bình Trọng đến quán bia xanh)",
-            afternoon: "HB041 : Trần Nhân Tông (công viên Thống Nhất, công viên Lê Nin)",
-
-        }
-
-    ];
-
-
     var forFG = {
-        prepares: prepares,
+        notices: notices,
         steps: steps,
-        methods: paymentMethods,
+        veluot: veluot,
+        vethang: vethang,
         infos: infos,
-        contacts: contacts,
-        plans: plans
+        contacts: contacts
     };
 
     res.render('note', forFG);
