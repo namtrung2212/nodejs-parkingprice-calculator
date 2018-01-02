@@ -28,7 +28,8 @@ server.get('/note', function (req, res) {
 
     var notices = [
         { note: "(*) 30 PHÚT PHẢI XEM LẠI TRANG NÀY ! " },
-        { note: "(*) Khách hàng chủ động lựa chọn phương thức thanh toán mà họ muốn." },
+        { note: "(*) Sử dụng ứng dụng mới có nhắc hết giờ đỗ xe" },
+        { note: "(*) Khách hàng lựa chọn phương thức thanh toán mà họ muốn." },
         { note: "(*) Vé tháng : Hợp đồng ký xong mới được nhập vào máy tính bảng" },
         { note: "(*) Vinaphone, Mobifone, Vietnamobile đang hoàn thiện hợp đồng" },
         { note: "(*) Ghi lại biển số xe mà khách đã thanh toán bằng tiền mặt." },
@@ -80,7 +81,6 @@ server.get('/note', function (req, res) {
         { note: "Tăng giá theo bậc thang là quyết định của UBND TP Hà Nội, iParking chỉ là hệ thống phần mềm quản lý." },
         { note: "Thanh toán bằng tiền mặt thì sẽ được ghi nhận vào hệ thống => minh bạch thu ngân sách" }
     ];
-
 
     var contacts = [
         { note: "Phụ trách chung : a Vinh (0949200690)" },
